@@ -1,0 +1,128 @@
+#include <SoftwareSerial.h>
+SoftwareSerial Blue(0, 1);
+long int data;
+int nob = 0; // variable resistor connected to analog pin A0
+int nobdata = 0;
+long int password1 = 92;// forward
+long int password2 = 91;// reverse
+long int password3 = 71; // right
+long int password4 = 79;// left
+long int password5 = 89; // stop
+char state = 0;
+int urmw1 = 2; // up right motor wire 1
+int urmw2 = 3; // up right motor wire2
+int drmw1 = 4; // down right motor wire1
+int drmw2 = 5; // down right motor wire2
+int ulmw1 = 6; // up left motor wire1
+int ulmw2 = 7; // up left motor wire2
+int dlmw1 = 8; // down left motor wire1
+int dlmw2 = 9; // down left motor wire2
+int bdm = 11; // brushless dc motor
+void setup()
+{
+pinMode(bdm, OUTPUT);
+pinMode(nob, INPUT);
+pinMode(urmw1, OUTPUT);
+pinMode(urmw2, OUTPUT);
+pinMode(drmw1, OUTPUT);
+pinMode(drmw2, OUTPUT);
+pinMode(ulmw1, OUTPUT);
+pinMode(ulmw2, OUTPUT);
+pinMode(dlmw1, OUTPUT);
+pinMode(dlmw2, OUTPUT);
+// keep all the motors off by default
+digitalWrite(urmw1, LOW);
+digitalWrite(urmw2, LOW);
+digitalWrite(drmw1, LOW);
+digitalWrite(drmw2, LOW);
+digitalWrite(ulmw1, LOW);
+digitalWrite(ulmw2, LOW);
+digitalWrite(dlmw1, LOW);
+digitalWrite(dlmw2, LOW);
+Serial.begin(9600);
+Blue.begin(9600);
+delay(1000);
+}
+void loop()
+{
+// while(Blue.available()==0) ;
+nobdata = analogRead(nob);
+nobdata = map(nobdata, 0, 1024, 0, 255);
+analogWrite(bdm,nobdata);
+//Serial.println(nobdata);
+delay(20);
+if(Blue.available()>0)
+{
+data = Blue.parseInt();
+delay(200);
+}
+//delay(1000);
+//Serial.print(data);
+if (data == password1) // forward
+{
+digitalWrite(urmw1, HIGH);
+digitalWrite(urmw2, LOW);
+digitalWrite(drmw1, HIGH);
+digitalWrite(drmw2, LOW);
+digitalWrite(ulmw1, LOW);
+digitalWrite(ulmw2, HIGH);
+digitalWrite(dlmw1, LOW);
+digitalWrite(dlmw2, HIGH);
+data = 45; // garbage value to stop repetition
+Serial.println("Forward");
+}
+if( data == password2) // reverse
+{
+digitalWrite(urmw1, LOW);
+digitalWrite(urmw2, HIGH);
+digitalWrite(drmw1, LOW);
+digitalWrite(drmw2, HIGH);
+digitalWrite(ulmw1, HIGH);
+digitalWrite(ulmw2, LOW);
+digitalWrite(dlmw1, HIGH);
+digitalWrite(dlmw2, LOW);
+data = 45; // garbage value to stop repetition
+Serial.println("Reverse");
+} else
+if( data == password3) // right
+{
+digitalWrite(urmw1, LOW);
+digitalWrite(urmw2, HIGH);
+digitalWrite(drmw1, LOW);
+digitalWrite(drmw2, HIGH);
+digitalWrite(ulmw1, LOW);
+digitalWrite(ulmw2, HIGH);
+digitalWrite(dlmw1, LOW);
+digitalWrite(dlmw2, HIGH);
+data = 45; // garbage value to stop repetition
+Serial.println("right");
+}
+else
+if( data == password4) // left
+{
+digitalWrite(urmw1, HIGH);
+digitalWrite(urmw2, LOW);
+digitalWrite(drmw1, HIGH);
+digitalWrite(drmw2, LOW);
+digitalWrite(ulmw1, HIGH);
+digitalWrite(ulmw2, LOW);
+digitalWrite(dlmw1, HIGH);
+digitalWrite(dlmw2, LOW);
+data = 45; // garbage value to stop repetition
+Serial.println("Left");
+}
+else
+if( data == password5) // stop
+{
+digitalWrite(urmw1, LOW);
+digitalWrite(urmw2, LOW);
+digitalWrite(drmw1, LOW);
+digitalWrite(drmw2, LOW);
+digitalWrite(ulmw1, LOW);
+digitalWrite(ulmw2, LOW);
+digitalWrite(dlmw1, LOW);
+digitalWrite(dlmw2, LOW);
+data = 45; // garbage value to stop repetition
+Serial.println("stop");
+}
+}
